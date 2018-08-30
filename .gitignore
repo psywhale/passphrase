@@ -1,1 +1,7 @@
 .idea/
+/wordlists.spec
+/build/
+__pycache__/
+
+
+
