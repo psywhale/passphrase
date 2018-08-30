@@ -1,4 +1,5 @@
 from random import randint
+import argparse
 
 shortlist = {
 "1111":"acid",
@@ -9096,13 +9097,13 @@ def rolldice():
 
 def longdice():
     res = list()
-    for x in range(1,6) :
+    for x in range(1, 6):
         res.append(rolldice())
     return res
 
-for numphrase in range(1,29):
+def getphrase(wordcount=2, seperator=None):
     phrase = ""
-    for length in range(1,5):
+    for length in range(0,wordcount):
         evenodd = randint(1, 2)
         if evenodd is 1:
             dieroll = getWordfromLongList(False)
@@ -9110,13 +9111,15 @@ for numphrase in range(1,29):
         else:
             dieroll = getWordfromLongList(True)
             phrase += longlist[dieroll]
-    print(phrase)
+        if wordcount > 1 and length < (wordcount-1) and seperator is not None:
+            phrase += str(seperator)
+    return phrase
 
 
-
-
-
-
-
-
-#print('{}'.format(longdice()))
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('words', type=int, default=2, help='Number of words')
+    parser.add_argument('-s', '--seperator', help='seperator character')
+    args = parser.parse_args()
+    if args.words > 0:
+        print(getphrase(args.words, args.seperator))
