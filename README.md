@@ -27,7 +27,7 @@ Replace Characters (optional):
   -rc REPLACECOUNT, --replacecount REPLACECOUNT
                         How many characters in the phrase to replace. Default
                         ALL
-  -C                    RaNdom CapItiLiZe the phrase
+  -C                    RaNdom CapItaLiZe the phrase
 
 ```
 

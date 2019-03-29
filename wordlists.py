@@ -9122,32 +9122,41 @@ def getphrase(wordcount=2, separator=None, randsep=False, replace=None, count=0)
     phrase = ""
     for length in range(0,wordcount):
         evenodd = randint(1, 2)
+
+        # If odd get a word from the short list
+        # else get one from the long list
         if evenodd is 1:
             dieroll = getWordfromList(False)
             phrase += shortlist[dieroll]
         else:
             dieroll = getWordfromList(True)
             phrase += longlist[dieroll]
+
+        # if a random seperator is wanted roll for it.
         if randsep is True:
             separator = randseperator[str(rolldice(len(randseperator)))]
+        #else use the one supplied from the CLI if there is one.
         if wordcount > 1 and length < (wordcount-1) and separator is not None:
             phrase += str(separator)[:1]
+
+    # Are we replacing any characters?
     if replace is not None:
         if count > 0:
             phrase = sub(str(replace[0])[:1],str(replace[1])[:1],phrase, count)
         else:
             phrase = sub(str(replace[0])[:1], str(replace[1])[:1], phrase)
-    uindex = randint(1,phrase.__len__()-1)
-
-
 
     return phrase
 
 def randomcapitalize(phrase="", freq=5):
     capphrase = ''
+    # for each char in phrase...
     for c in phrase:
+        # generate a random number from 1 -> freq
+        # the higher the freq the less likely a capitalization happens
+        # setting freq to the number of words seems to be a good balance.
+        #TODO make freq an optional argument on the CLI
         flipper = randint(1,freq)
-
         if flipper is 1:
             c = c.upper()
         capphrase += c
@@ -9164,7 +9173,7 @@ if __name__ == '__main__':
     replacechar = parser.add_argument_group('Replace Characters (optional)', 'Replace characters in the phrase options')
     replacechar.add_argument('-r', '--replace', metavar="char", nargs=2, help="replace characters with another")
     replacechar.add_argument('-rc', '--replacecount', default=0, type=int, help='How many characters in the phrase to replace. Default ALL')
-    replacechar.add_argument('-C', dest='capflag', action='store_true', help="RaNdom CapItiLiZe the phrase")
+    replacechar.add_argument('-C', dest='capflag', action='store_true', help="RaNdom CapItaLiZe the phrase")
 
     args = parser.parse_args()
 
