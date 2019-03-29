@@ -1,4 +1,5 @@
 from random import randint
+from re import sub
 import argparse
 
 shortlist = {
@@ -9079,47 +9080,96 @@ longlist = {
 "66666":"zoom",
 }
 
+randseperator = {
+    "1": "-",
+    "2": "!",
+    "3": "%",
+    "4": "?",
+    "5": "#",
+    "6": "_",
+    "7": ".",
+    "8": "*",
+}
+
+replacements = {
+    "a": "4",
+    "e": "3",
+    "s": "$",
+    "o": "0",
+    "i": "1",
+    "t": "+",
+}
 
 
 
-
-
-def getWordfromLongList(uselong=True):
+def getWordfromList(uselong=True):
     if uselong is True:
-        return '{}{}{}{}{}'.format(rolldice(),rolldice(),rolldice(),rolldice(),rolldice())
+        return '{}{}{}{}{}'.format(rolldice(),rolldice(),
+                                   rolldice(),rolldice(),rolldice()
+                                   )
     else:
-        return '{}{}{}{}'.format(rolldice(),rolldice(),rolldice(),rolldice())
+        return '{}{}{}{}'.format(rolldice(),rolldice(),
+                                 rolldice(),rolldice()
+                                 )
 
 
-def rolldice():
-    result = randint(1, 6)
+def rolldice(d=6):
+    result = randint(1, d)
     return result
 
-def longdice():
-    res = list()
-    for x in range(1, 6):
-        res.append(rolldice())
-    return res
 
-def getphrase(wordcount=2, seperator=None):
+def getphrase(wordcount=2, separator=None, randsep=False, replace=None, count=0):
     phrase = ""
     for length in range(0,wordcount):
         evenodd = randint(1, 2)
         if evenodd is 1:
-            dieroll = getWordfromLongList(False)
+            dieroll = getWordfromList(False)
             phrase += shortlist[dieroll]
         else:
-            dieroll = getWordfromLongList(True)
+            dieroll = getWordfromList(True)
             phrase += longlist[dieroll]
-        if wordcount > 1 and length < (wordcount-1) and seperator is not None:
-            phrase += str(seperator)
+        if randsep is True:
+            separator = randseperator[str(rolldice(len(randseperator)))]
+        if wordcount > 1 and length < (wordcount-1) and separator is not None:
+            phrase += str(separator)[:1]
+    if replace is not None:
+        if count > 0:
+            phrase = sub(str(replace[0])[:1],str(replace[1])[:1],phrase, count)
+        else:
+            phrase = sub(str(replace[0])[:1], str(replace[1])[:1], phrase)
+    uindex = randint(1,phrase.__len__()-1)
+
+
+
     return phrase
 
+def randomcapitalize(phrase="", freq=5):
+    capphrase = ''
+    for c in phrase:
+        flipper = randint(1,freq)
+
+        if flipper is 1:
+            c = c.upper()
+        capphrase += c
+    return capphrase
 
 if __name__ == '__main__':
+    capflag=False
     parser = argparse.ArgumentParser()
-    parser.add_argument('words', type=int, default=2, help='Number of words')
-    parser.add_argument('-s', '--seperator', help='seperator character')
+
+    parser.add_argument('words', type=int, default=2, help='Number of words to roll for or how long the phrase will be')
+    wordsep = parser.add_argument_group("Word Separation options (optional)")
+    wordsep.add_argument('-s', '--separator', help='Optional separator character between words.')
+    wordsep.add_argument('-S', '--randseparator', action="store_true", help='Use a random separator between words')
+    replacechar = parser.add_argument_group('Replace Characters (optional)', 'Replace characters in the phrase options')
+    replacechar.add_argument('-r', '--replace', metavar="char", nargs=2, help="replace characters with another")
+    replacechar.add_argument('-rc', '--replacecount', default=0, type=int, help='How many characters in the phrase to replace. Default ALL')
+    replacechar.add_argument('-C', dest='capflag', action='store_true', help="RaNdom CapItiLiZe the phrase")
+
     args = parser.parse_args()
+
     if args.words > 0:
-        print(getphrase(args.words, args.seperator))
+        phrase = getphrase(args.words, args.separator, args.randseparator,args.replace, args.replacecount)
+        if args.capflag:
+            phrase = randomcapitalize(phrase, args.words)
+        print(phrase)
