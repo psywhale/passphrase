@@ -9125,7 +9125,7 @@ def getphrase(wordcount=2, separator=None, randsep=False, replace=None, count=0)
 
         # If odd get a word from the short list
         # else get one from the long list
-        if evenodd is 1:
+        if evenodd == 1:
             dieroll = getWordfromList(False)
             phrase += shortlist[dieroll]
         else:
@@ -9157,7 +9157,7 @@ def randomcapitalize(phrase="", freq=5):
         # setting freq to the number of words seems to be a good balance.
         #TODO make freq an optional argument on the CLI
         flipper = randint(1,freq)
-        if flipper is 1:
+        if flipper == 1:
             c = c.upper()
         capphrase += c
     return capphrase
